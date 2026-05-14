@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HashJackpot | Rare Hash Leaderboard</title>
+  <meta name="description" content="Roll a SHA-256 hash, beat the odds and climb the public HashJackpot leaderboard.">
+  <meta name="theme-color" content="#09070f">
+  <meta property="og:title" content="HashJackpot | Rare Hash Leaderboard">
+  <meta property="og:description" content="Roll a hash, beat the odds and climb the leaderboard.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nathm.net/hashjackpot/">
+  <link rel="canonical" href="https://nathm.net/hashjackpot/">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="./styles.css?v=114">
+</head>
+<body>
+  <div class="casino-bg" aria-hidden="true"></div>
+  <div class="casino-grain" aria-hidden="true"></div>
+
+  <nav class="topbar" aria-label="HashJackpot navigation">
+    <a class="brand" href="./" aria-label="HashJackpot home">
+      <span class="brand-mark">HJ</span>
+      <span><b>HashJackpot</b><small>rare hash leaderboard</small></span>
+    </a>
+    <div class="topnav">
+      <a href="#machine">Play</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#share">Share</a>
+      <a href="#explain">How it works</a>
+      <a href="https://nathm.net/">nathm.net</a>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">rare hash leaderboard</p>
+        <h1>HashJackpot</h1>
+        <p class="tagline">Roll a hash. Beat the odds. Climb the leaderboard. Each spin creates one SHA-256 result, and the rarest starting-zero runs take the top spots.</p>
+        <div class="pill-row" aria-label="Safety notes">
+          <span>One spin = one hash</span>
+          <span>Live leaderboard</span>
+          <span>Human-readable odds</span>
+          <span>Proof links</span>
+        </div>
+      </div>
+      <aside class="hero-meter jackpot-panel" aria-label="Current target">
+        <p class="tiny">Main target</p>
+        <strong>Beat the odds</strong>
+        <span>More zeroes at the start means a rarer pull. A 20-bit hit is roughly one in a million.</span>
+        <div class="meter"><i id="heroMeter"></i></div>
+        <small id="heroMeterText">Waiting for first spin.</small>
+      </aside>
+    </header>
+
+    <section id="welcomeCard" class="welcome-card card" aria-label="HashJackpot quick explanation">
+      <div>
+        <p class="eyebrow">quick start</p>
+        <h2>Simple rule: more zeroes wins.</h2>
+        <p>Press Spin and you get one hash. If the hash starts with zeroes, it scores. More zeroes means longer odds and a better place on the leaderboard.</p>
+      </div>
+      <div class="welcome-steps">
+        <span><b>1</b> Spin</span>
+        <span><b>2</b> Count zeroes</span>
+        <span><b>3</b> See the odds</span>
+        <span><b>4</b> Submit</span>
+      </div>
+    </section>
+
+    <section class="lobby-strip" aria-label="HashJackpot feature highlights">
+      <div class="lobby-tile hot"><span>Today</span><strong id="dailyBountyTile">loading...</strong><small id="dailyBountySmall">Daily side target</small></div>
+      <div class="lobby-tile"><span>Leaderboard entry</span><strong id="minSubmitBits">loading...</strong><small>Minimum score to submit</small></div>
+      <div class="lobby-tile"><span>Big flex</span><strong>20+ bits</strong><small>About one in a million</small></div>
+      <div class="lobby-tile"><span>Leaderboard status</span><strong id="boardStatusTile">checking...</strong><small id="boardStatusSmall">Public API</small></div>
+      <div class="lobby-tile"><span>Session</span><strong id="jackpotGrade">Starter</strong><small>Local milestone tier</small></div>
+    </section>
+
+    <section class="card lower ticker-card" aria-label="Machine status">
+      <div class="ticker-track">
+        <span>LEADERBOARD</span>
+        <b id="tickerBoard">checking...</b>
+        <span>POSTING FLOOR</span>
+        <b id="tickerFloor">loading...</b>
+        <span>NEXT GOAL</span>
+        <b id="tickerTarget">8 bits</b>
+        <span>ONE SPIN</span>
+        <b>ONE HASH</b>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <article id="machine" class="machine card casino-card">
+        <div class="machine-header">
+          <div>
+            <p class="tiny">Today's leaderboard</p>
+            <strong id="challenge">loading...</strong>
+            <span id="challengeName" class="micro-line">challenge loading...</span>
+          </div>
+          <div>
+            <p class="tiny">Closes in</p>
+            <strong id="timeLeft">loading...</strong>
+          </div>
+          <div>
+            <p class="tiny">Daily bounty</p>
+            <strong id="dailyBounty">loading...</strong>
+          </div>
+        </div>
+
+        <div class="marquee" aria-hidden="true">
+          <span>SHA-256</span><span>ZEROES WIN</span><span>ONE SPIN = ONE HASH</span><span>LIVE BOARD</span>
+        </div>
+
+        <div class="odds-strip" aria-label="Odds benchmarks">
+          <span><b>12 bits</b> about 1 in 4,096</span>
+          <span><b>16 bits</b> about 1 in 65,536</span>
+          <span><b>20 bits</b> about 1 in 1,048,576</span>
+          <span><b>26 bits</b> rarer than UK Lotto jackpot odds</span>
+        </div>
+
+        <div id="reels" class="reels" aria-live="polite"></div>
+
+        <div class="cabinet-strip" aria-label="Session cabinet meters">
+          <div><span>Next clean hit</span><strong id="nextTarget">8 bits</strong></div>
+          <div><span>Session peak</span><strong id="sessionPeak">0 bits</strong></div>
+          <div><span>Hot pulls</span><strong id="hotPulls">0</strong></div>
+        </div>
+
+        <div class="machine-readout">
+          <div>
+            <p class="tiny">Latest spin</p>
+            <strong id="latestBits">0 zero bits</strong>
+            <span id="latestOdds">1 in 1</span>
+          </div>
+          <div>
+            <p class="tiny">Result</p>
+            <strong id="latestVerdict">The machine is idle.</strong>
+          </div>
+          <div>
+            <p class="tiny">Points</p>
+            <strong id="latestGlory">0 GS</strong>
+            <span id="latestTier">No tier yet</span>
+          </div>
+        </div>
+
+        <div class="result-explain" id="resultExplain">
+          <strong>What just happened?</strong>
+          <span>Spin once to roll one hash. The page will count its starting zeroes and show the odds.</span>
+        </div>
+
+        <div class="target-row" aria-label="Turbo target">
+          <label for="turboTarget">Auto-stop target</label>
+          <select id="turboTarget">
+            <option value="0">Stop when I click Stop</option>
+            <option value="submit">Leaderboard entry</option>
+            <option value="bounty">Daily bounty</option>
+            <option value="lotto">Beat UK Lotto odds</option>
+          </select>
+          <span id="targetHint">Auto spin rolls one visible hash every 1.6 seconds.</span>
+        </div>
+
+        <div class="controls">
+          <button id="pull" class="button primary">Spin once</button>
+          <button id="turbo" class="button danger">Auto spin</button>
+          <button id="stop" class="button ghost" disabled>Stop</button>
+        </div>
+
+        <p class="key-hint"><kbd>Space</kbd> spin once <kbd>T</kbd> auto spin <kbd>Esc</kbd> stop <kbd>V</kbd> verify</p>
+        <p id="status" class="status">Loading table...</p>
+        <p id="bountyStatus" class="status secondary">Daily bounty loading...</p>
+        <div class="notice-row"><p id="apiNotice" class="notice"></p><button id="retryApi" class="mini subtle" type="button">Retry leaderboard</button></div>
+
+        <div id="serverStats" class="server-stats" aria-label="Public leaderboard stats">
+          <div><strong>loading</strong><span>leaderboard stats</span></div>
+        </div>
+      </article>
+
+      <aside class="stats card">
+        <div class="section-head compact">
+          <div>
+            <p class="eyebrow">your run</p>
+            <h2>Current session</h2>
+          </div>
+          <span id="proofFreshness" class="badge muted">no proof</span>
+        </div>
+
+        <dl class="stat-list">
+          <div><dt>Today's best</dt><dd id="todayBest">0 bits</dd></div>
+          <div><dt>All-time best</dt><dd id="bestBits">0 bits</dd></div>
+          <div><dt>Best hex zeroes</dt><dd id="bestHex">0</dd></div>
+          <div><dt>Best rarity</dt><dd id="bestOdds">1 in 1</dd></div>
+          <div><dt>Best score</dt><dd id="proofPoints">0 GS</dd></div>
+          <div><dt>Best tier</dt><dd id="proofTier">No tier</dd></div>
+          <div><dt>Total local score</dt><dd id="gloryVault">0 GS</dd></div>
+          <div><dt>Local rank</dt><dd id="gloryRankSmall">No score yet</dd></div>
+          <div><dt>Spins today</dt><dd id="hashesTried">0</dd></div>
+          <div><dt>Speed</dt><dd id="speed">idle</dd></div>
+        </dl>
+
+        <p id="verdict" class="verdict">Start spinning. Your rarest hash will show here.</p>
+
+        <div class="hash-readout">
+          <p class="tiny">Best hash</p>
+          <code id="bestHash">No proof yet.</code>
+        </div>
+
+        <div class="mini-actions">
+          <button id="copyProof" class="mini">Copy proof</button>
+          <button id="copyProofLink" class="mini">Copy link</button>
+          <button id="shareResult" class="mini">Copy result proof</button>
+          <button id="resetLocal" class="mini">Reset local</button>
+        </div>
+      </aside>
+    </section>
+
+    <section id="leaderboard" class="card leaderboard casino-card lower">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">verified scores</p>
+          <h2>Leaderboard</h2>
+        </div>
+        <div class="toggle-row" role="group" aria-label="Leaderboard scope">
+          <button id="scopeDaily" class="mini active">Today</button>
+          <button id="scopeAll" class="mini">All time</button>
+          <button id="scopeRecent" class="mini">Recent</button>
+          <button id="scopeAttempts" class="mini">Most spins</button>
+          <button id="refreshBoard" class="mini">Refresh</button>
+        </div>
+      </div>
+
+      <div class="board-copy">
+        <strong>The leaderboard is the point.</strong>
+        <span>Top place goes to the rarest hash. The odds are shown in plain English, and proof links let the server check the result again.</span>
+      </div>
+
+      <div class="submit-row">
+        <input id="playerName" maxlength="24" placeholder="display name for the leaderboard" autocomplete="nickname">
+        <button id="submit" class="button">Submit best pull</button>
+      </div>
+      <p id="submitResult" class="submit-result"></p>
+      <p id="submitHint" class="submit-hint">Find a rare enough hash to post it.</p>
+
+      <div id="leaderboardFlex" class="leaderboard-flex" aria-label="Top proof highlights"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rank</th><th>Name</th><th>Score</th><th>Points</th><th>Odds</th><th>Spins tried</th><th>Hash</th><th>Proof</th></tr></thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+        <p id="leaderboardEmpty" class="empty">No public scores yet.</p>
+      </div>
+    </section>
+
+    <section id="share" class="card lower share-kit casino-card">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">share</p>
+          <h2>Copy the proof.</h2>
+        </div>
+        <span class="badge muted">page link + maths</span>
+      </div>
+      <div class="share-grid">
+        <div>
+          <p>When you hit something rare, copy the page link, the maths explainer, or a simple proof summary.</p>
+          <div class="share-actions">
+            <button id="copyBoardLink" class="mini" type="button">Copy page link</button>
+            <button id="copyMathExplain" class="mini" type="button">Copy maths explainer</button>
+            <button id="copyResultProof" class="mini" type="button">Copy result proof</button>
+          </div>
+        </div>
+        <div class="share-benchmarks" aria-label="Rarity benchmarks">
+          <div><strong>12 bits</strong><span>about 1 in 4,096</span></div>
+          <div><strong>16 bits</strong><span>about 1 in 65,536</span></div>
+          <div><strong>20 bits</strong><span>about 1 in 1,048,576</span></div>
+          <div><strong>26 bits</strong><span>rarer than UK Lotto jackpot odds</span></div>
+          <p class="benchmark-note">UK Lotto jackpot odds are 1 in 45,057,474. HashJackpot uses that only as a comparison.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="progression" class="grid lower player-grid">
+      <article class="card glory-system-card">
+        <p class="eyebrow">local score</p>
+        <h2>Local score</h2>
+        <div class="glory-card">
+          <strong id="gloryVaultBig">0 GS</strong>
+          <span id="gloryRank">No score yet</span>
+          <p id="nextGloryRank">Find a new personal best to start earning local score.</p>
+        </div>
+        <div class="formula-row glory-formula"><code id="gloryFormula">Score loads after your first spin.</code></div>
+        <p class="small">Local score is saved in this browser and gives the page a bit of progression.</p>
+        <ul id="gloryEvents" class="recent glory-events"></ul>
+      </article>
+
+      <article class="card achievements-card">
+        <div class="section-head compact">
+          <div>
+            <p class="eyebrow">stamps</p>
+            <h2>Milestones</h2>
+          </div>
+          <span id="achievementCount" class="badge muted">0/0</span>
+        </div>
+        <p>Small local milestones for regular play and rare hits. They stay in this browser.</p>
+        <ul id="achievements" class="achievements"></ul>
+      </article>
+    </section>
+
+    <section class="card lower upgrades-card" aria-label="Cabinet progression">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">cabinet</p>
+          <h2>Local progress</h2>
+        </div>
+        <span class="badge muted">local unlocks</span>
+      </div>
+      <p>These are cosmetic only. They do not change the odds or give an advantage.</p>
+      <div id="upgradeGrid" class="upgrade-grid"></div>
+    </section>
+
+    <section class="grid lower info-grid">
+      <article class="card">
+        <p class="eyebrow">paytable</p>
+        <h2>What counts as rare?</h2>
+        <p>Each extra zero bit halves the chance again. That is why the numbers climb so fast.</p>
+        <div id="ladder" class="ladder"></div>
+      </article>
+
+      <article class="card recent-card">
+        <p class="eyebrow">recent pulls</p>
+        <h2>Spin tape</h2>
+        <ol id="recentPulls" class="recent"></ol>
+      </article>
+    </section>
+
+    <section id="explain" class="card about lower explainer">
+      <p class="eyebrow">plain English</p>
+      <h2>What is HashJackpot?</h2>
+      <p>It is a rare-hash leaderboard. One spin makes one SHA-256 hash. If it starts with zeroes, it scores. More zeroes means longer odds and a better rank.</p>
+      <p>The Lotto comparison uses UK Lotto jackpot odds: 1 in 45,057,474. HashJackpot is not gambling. There is no money, crypto or prize pot.</p>
+      <div class="trust-grid">
+        <div><strong>1. Spin</strong><span>Your browser rolls one hash.</span></div>
+        <div><strong>2. Count</strong><span>Starting zeroes set the score.</span></div>
+        <div><strong>3. Post</strong><span>Good scores can go on the leaderboard.</span></div>
+        <div><strong>4. Prove</strong><span>The server checks the proof.</span></div>
+      </div>
+      <button id="copyExplainer" class="button primary">Copy plain explanation</button>
+    </section>
+
+    <details class="card lower receipt-tools">
+      <summary>Proof tools</summary>
+      <p>Optional tools for checking a public proof.</p>
+      <textarea id="proofBox" placeholder="Your best proof appears here after a spin."></textarea>
+      <div id="proofInspector" class="proof-inspector">
+        <strong>Proof inspector</strong>
+        <span>No proof loaded yet.</span>
+      </div>
+      <div class="proof-actions">
+        <button id="verifyProof" class="button ghost">Verify proof</button>
+        <p id="verifyResult" class="submit-result"></p>
+      </div>
+    </details>
+
+    <section class="system-hidden" aria-hidden="true">
+      <code id="salt">loading...</code>
+      <span id="commitment">loading...</span>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a href="https://nathm.net/">nathm.net</a>
+    <span>HashJackpot is a small web experiment: rare hashes, odds, proof links and a public leaderboard.</span>
+  </footer>
+
+  <script defer src="https://nathm.net/assets/js/nathm-analytics.js?v=v94"></script>
+  <script src="./sha256.js?v=113"></script>
+  <script src="./app.js?v=114"></script>
+</body>
+</html>

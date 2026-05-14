@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env.*
+server_secret.txt
+submissions.json
+*.log
+.DS_Store
+Thumbs.db

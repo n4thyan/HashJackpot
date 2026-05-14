@@ -1,0 +1,16 @@
+{
+  "name": "hashjackpot",
+  "version": "1.14.0",
+  "private": true,
+  "description": "A SHA-256 rare-hash leaderboard with server-verified proofs, public receipts and local progress.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

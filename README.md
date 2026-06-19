@@ -1,16 +1,22 @@
-﻿# HashJackpot
+# HashJackpot
 
 HashJackpot is a SHA-256 probability demo and rare-hash leaderboard.
 
 Each spin generates one SHA-256 hash. The more zero bits the hash starts with, the rarer the result. Good results can be submitted to a leaderboard, where the server recomputes the proof before accepting it.
 
+## Live demo
+
+Live demo: https://nathm.net/hashjackpot/
+
+Repository: https://github.com/n4thyan/HashJackpot
+
 ## Project status
 
-HashJackpot is currently a prototype and is not live on nathm.net while the portfolio site is being rebuilt.
+HashJackpot is live as a portfolio demo at `https://nathm.net/hashjackpot/`.
 
 The current version includes the core browser demo and a Node.js backend for challenge tokens, server-verified submissions, public proof receipts and leaderboard data.
 
-Planned future work includes restoring the live demo, reviewing deployment/security settings, adding screenshots and deciding whether it should live at `/hashjackpot/` or a separate subdomain.
+Future work may include UI polish, screenshots, additional testing notes, improved moderation tools and clearer public documentation around the proof/leaderboard flow.
 
 ## Built with
 

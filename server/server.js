@@ -17,7 +17,7 @@ const crypto = require('crypto');
 
 const PORT = Number(process.env.PORT || process.env.HJ_PORT || 8787);
 const HOST = process.env.HJ_HOST || '127.0.0.1';
-const PUBLIC_DIR = path.join(__dirname, 'public');
+const PUBLIC_DIR = process.env.HJ_PUBLIC_DIR || path.join(__dirname, '..', 'public');
 const DATA_DIR = process.env.HJ_DATA_DIR || path.join(__dirname, 'data');
 const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
 const SECRET_FILE = path.join(DATA_DIR, 'server_secret.txt');
@@ -334,7 +334,7 @@ function bestRows(rows, scope) {
     rank: index + 1,
     displayName: row.displayName,
     challengeId: row.challengeId,
-    shortHash: `${row.hash.slice(0, 18)}…`,
+    shortHash: `${row.hash.slice(0, 18)}â€¦`,
     hash: row.hash,
     leadingZeroBits: row.leadingZeroBits,
     leadingHexZeroes: row.leadingHexZeroes,
@@ -357,7 +357,7 @@ function recentRows(rows) {
       rank: index + 1,
       displayName: row.displayName,
       challengeId: row.challengeId,
-      shortHash: `${row.hash.slice(0, 18)}…`,
+      shortHash: `${row.hash.slice(0, 18)}â€¦`,
       hash: row.hash,
       leadingZeroBits: row.leadingZeroBits,
       leadingHexZeroes: row.leadingHexZeroes,
@@ -390,7 +390,7 @@ function attemptsRows(rows) {
     rank: index + 1,
     displayName: row.displayName,
     challengeId: row.challengeId,
-    shortHash: `${row.hash.slice(0, 18)}…`,
+    shortHash: `${row.hash.slice(0, 18)}â€¦`,
     hash: row.hash,
     leadingZeroBits: row.leadingZeroBits,
     leadingHexZeroes: row.leadingHexZeroes,
@@ -934,7 +934,10 @@ const server = http.createServer(async (req, res) => {
   try {
     if (apiPathname.startsWith('/api/')) return await handleApi(req, res, apiPathname, url);
     if (req.method !== 'GET' && req.method !== 'HEAD') return sendJson(res, 405, { ok: false, error: 'Method not allowed.' });
-    return serveStatic(req, res, url.pathname);
+    const staticPathname = pathname.startsWith('/hashjackpot')
+      ? (pathname.replace(/^\/hashjackpot/, '') || '/')
+      : url.pathname;
+    return serveStatic(req, res, staticPathname);
   } catch (err) {
     console.error(err);
     return sendJson(res, 500, { ok: false, error: 'Server error.' });
@@ -945,3 +948,4 @@ server.listen(PORT, HOST, () => {
   console.log(`HashJackpot running at http://${HOST}:${PORT}`);
   console.log(`Daily submit threshold: ${MIN_SUBMIT_BITS} leading zero bits`);
 });
+
